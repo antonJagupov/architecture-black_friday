@@ -1,35 +1,26 @@
-# pymongo-api
+0. Перейти в каталог проекта /sharding-repl-cache
 
-## Как запустить
+1. docker-compose build --no-cache
 
-Запускаем mongodb и приложение
+2. powershell -ExecutionPolicy Bypass -File ./scripts/init.ps1
 
-```shell
-docker compose up -d
-```
 
-Заполняем mongodb данными
 
-```shell
-./scripts/mongo-init.sh
-```
+3. Если пункт 7 не прошел, выполнить вручную: 
 
-## Как проверить
+docker exec -it mongos_router mongosh --port 27020
 
-### Если вы запускаете проект на локальной машине
+sh.addShard("shard1ReplSet/shard1a:27018,shard1b:27018,shard1c:27018");
+sh.addShard("shard2ReplSet/shard2a:27019,shard2b:27019,shard2c:27019");
 
-Откройте в браузере http://localhost:8080
+sh.enableSharding("somedb");
+sh.shardCollection("somedb.helloDoc", { "name" : "hashed" } )
 
-### Если вы запускаете проект на предоставленной виртуальной машине
+use somedb;
 
-Узнать белый ip виртуальной машины
+for(var i = 0; i < 1000; i++) db.helloDoc.insert({age:i, name:"ly"+i})
 
-```shell
-curl --silent http://ifconfig.me
-```
+db.helloDoc.countDocuments() 
+exit();
 
-Откройте в браузере http://<ip виртуальной машины>:8080
-
-## Доступные эндпоинты
-
-Список доступных эндпоинтов, swagger http://<ip виртуальной машины>:8080/docs
+4. можно проверять http://localhost:8080/docs
