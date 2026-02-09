@@ -1,0 +1,424 @@
+services:
+ 
+  configSrv1:
+    image: mongo:latest
+    container_name: configSrv1
+    restart: always
+    ports:
+      - "27017:27017"
+    networks:
+      - mongodb-network
+    volumes:
+      - config1-data:/data/db
+    command:
+      [
+        "--configsvr",
+        "--replSet",
+        "configReplSet",
+        "--bind_ip_all",
+        "--port",
+        "27017",
+        "--setParameter",
+        "logicalSessionRefreshMillis=5000",
+        "--setParameter",
+        "transactionLifetimeLimitSeconds=300",
+        "--setParameter",
+        "disableLogicalSessionCacheRefresh=false"
+      ]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')", "--port", "27017"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  configSrv2:
+    image: mongo:latest
+    container_name: configSrv2
+    restart: always
+    ports:
+      - "27027:27017"
+    networks:
+      - mongodb-network
+    volumes:
+      - config2-data:/data/db
+    command:
+      [
+        "--configsvr",
+        "--replSet",
+        "configReplSet",
+        "--bind_ip_all",
+        "--port",
+        "27017",
+        "--setParameter",
+        "logicalSessionRefreshMillis=5000",
+        "--setParameter",
+        "transactionLifetimeLimitSeconds=300",
+        "--setParameter",
+        "disableLogicalSessionCacheRefresh=false"
+      ]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')", "--port", "27017"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  configSrv3:
+    image: mongo:latest
+    container_name: configSrv3
+    restart: always
+    ports:
+      - "27037:27017"
+    networks:
+      - mongodb-network
+    volumes:
+      - config3-data:/data/db
+    command:
+      [
+        "--configsvr",
+        "--replSet",
+        "configReplSet",
+        "--bind_ip_all",
+        "--port",
+        "27017",
+        "--setParameter",
+        "logicalSessionRefreshMillis=5000",
+        "--setParameter",
+        "transactionLifetimeLimitSeconds=300",
+        "--setParameter",
+        "disableLogicalSessionCacheRefresh=false"
+      ]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')", "--port", "27017"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  # ============ SHARD 1 REPLICA SET (3 реплики) ============
+  shard1a:
+    image: mongo:latest
+    container_name: shard1a
+    restart: always
+    ports:
+      - "27018:27018"
+    networks:
+      - mongodb-network
+    volumes:
+      - shard1a-data:/data/db
+    command:
+      [
+        "--shardsvr",
+        "--replSet",
+        "shard1ReplSet",
+        "--bind_ip_all",
+        "--port",
+        "27018",
+        "--setParameter",
+        "logicalSessionRefreshMillis=5000",
+        "--setParameter",
+        "transactionLifetimeLimitSeconds=300",
+        "--setParameter",
+        "disableLogicalSessionCacheRefresh=false"
+      ]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')", "--port", "27018"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  shard1b:
+    image: mongo:latest
+    container_name: shard1b
+    restart: always
+    ports:
+      - "27028:27018"
+    networks:
+      - mongodb-network
+    volumes:
+      - shard1b-data:/data/db
+    command:
+      [
+        "--shardsvr",
+        "--replSet",
+        "shard1ReplSet",
+        "--bind_ip_all",
+        "--port",
+        "27018",
+        "--setParameter",
+        "logicalSessionRefreshMillis=5000",
+        "--setParameter",
+        "transactionLifetimeLimitSeconds=300",
+        "--setParameter",
+        "disableLogicalSessionCacheRefresh=false"
+      ]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')", "--port", "27018"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  shard1c:
+    image: mongo:latest
+    container_name: shard1c
+    restart: always
+    ports:
+      - "27038:27018"
+    networks:
+      - mongodb-network
+    volumes:
+      - shard1c-data:/data/db
+    command:
+      [
+        "--shardsvr",
+        "--replSet",
+        "shard1ReplSet",
+        "--bind_ip_all",
+        "--port",
+        "27018",
+        "--setParameter",
+        "logicalSessionRefreshMillis=5000",
+        "--setParameter",
+        "transactionLifetimeLimitSeconds=300",
+        "--setParameter",
+        "disableLogicalSessionCacheRefresh=false"
+      ]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')", "--port", "27018"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  # ============ SHARD 2 REPLICA SET (3 реплики) ============
+  shard2a:
+    image: mongo:latest
+    container_name: shard2a
+    restart: always
+    ports:
+      - "27019:27019"
+    networks:
+      - mongodb-network
+    volumes:
+      - shard2a-data:/data/db
+    command:
+      [
+        "--shardsvr",
+        "--replSet",
+        "shard2ReplSet",
+        "--bind_ip_all",
+        "--port",
+        "27019",
+        "--setParameter",
+        "logicalSessionRefreshMillis=5000",
+        "--setParameter",
+        "transactionLifetimeLimitSeconds=300",
+        "--setParameter",
+        "disableLogicalSessionCacheRefresh=false"
+      ]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')", "--port", "27019"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  shard2b:
+    image: mongo:latest
+    container_name: shard2b
+    restart: always
+    ports:
+      - "27029:27019"
+    networks:
+      - mongodb-network
+    volumes:
+      - shard2b-data:/data/db
+    command:
+      [
+        "--shardsvr",
+        "--replSet",
+        "shard2ReplSet",
+        "--bind_ip_all",
+        "--port",
+        "27019",
+        "--setParameter",
+        "logicalSessionRefreshMillis=5000",
+        "--setParameter",
+        "transactionLifetimeLimitSeconds=300",
+        "--setParameter",
+        "disableLogicalSessionCacheRefresh=false"
+      ]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')", "--port", "27019"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  shard2c:
+    image: mongo:latest
+    container_name: shard2c
+    restart: always
+    ports:
+      - "27039:27019"
+    networks:
+      - mongodb-network
+    volumes:
+      - shard2c-data:/data/db
+    command:
+      [
+        "--shardsvr",
+        "--replSet",
+        "shard2ReplSet",
+        "--bind_ip_all",
+        "--port",
+        "27019",
+        "--setParameter",
+        "logicalSessionRefreshMillis=5000",
+        "--setParameter",
+        "transactionLifetimeLimitSeconds=300",
+        "--setParameter",
+        "disableLogicalSessionCacheRefresh=false"
+      ]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')", "--port", "27019"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  # ============ MONGOS ROUTER ============
+  mongos_router:
+    image: mongo:latest
+    container_name: mongos_router
+    restart: always
+    ports:
+      - "27020:27020"
+    networks:
+      - mongodb-network
+    depends_on:
+      - configSrv1
+      - configSrv2
+      - configSrv3
+    command:
+      [
+        "mongos",
+        "--configdb",
+        "configReplSet/configSrv1:27017,configSrv2:27017,configSrv3:27017",
+        "--bind_ip_all",
+        "--port",
+        "27020",
+        "--setParameter",
+        "disableLogicalSessionCacheRefresh=true",
+        "--setParameter",
+        "logicalSessionRefreshMillis=10000",
+        "--setParameter",
+        "maxSessions=1000000"
+      ]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')", "--port", "27020"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 90s
+      
+  # ============ REDIS CACHE APPLICATION ============  
+  # Redis Master
+  redis-master:
+    image: redis:7-alpine
+    container_name: redis-master
+    command: >
+      redis-server 
+      --bind 0.0.0.0
+      --port 6379
+      --appendonly yes
+      --appendfsync everysec
+      --protected-mode no
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    networks:
+      - mongodb-network
+      - redis-network
+    volumes:
+      - redis-master-data:/data
+    
+  # Redis Slave 1
+  redis-slave-1:
+    image: redis:7-alpine
+    container_name: redis-slave-1
+    command: >
+      redis-server 
+      --slaveof redis-master 6379
+      --appendonly yes
+    ports:
+      - "6380:6379"
+    networks:
+      - mongodb-network
+      - redis-network
+    depends_on:
+      - redis-master
+
+  # Redis Slave 2
+  redis-slave-2:
+    image: redis:7-alpine
+    container_name: redis-slave-2
+    command: >
+      redis-server 
+      --slaveof redis-master 6379
+      --appendonly yes
+    ports:
+      - "6381:6379"
+    networks:
+      - mongodb-network
+      - redis-network
+    depends_on:
+      - redis-master
+
+
+  # ============ FASTAPI APPLICATION ============
+  pymongo_api:
+    container_name: pymongo_api
+    build: 
+      context: api_app
+      dockerfile: Dockerfile
+    depends_on:
+      - mongos_router
+      - redis-master
+    ports:
+      - "8080:8080"
+    networks:
+      - mongodb-network
+      - redis-network
+    environment:
+      MONGODB_URL: "mongodb://mongos_router:27020"
+      MONGODB_DATABASE_NAME: "somedb"
+      REDIS_URL: "redis://redis-master:6379/0"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+networks:
+  mongodb-network:
+    driver: bridge
+  redis-network:
+    driver: bridge
+
+volumes:
+  config1-data:
+  config2-data:
+  config3-data:
+  shard1a-data:
+  shard1b-data:
+  shard1c-data:
+  shard2a-data:
+  shard2b-data:
+  shard2c-data:
+  redis-master-data:
